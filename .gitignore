@@ -1,0 +1,20 @@
+*.class
+
+# Package Files #
+# *.jar
+*.war
+*.ear
+*.iml
+./bin
+./lib
+./out
+*.log
+*.ipr
+*.iws
+*.iml
+*.cache
+dist/*
+target/
+.project
+.classpath
+.cache
