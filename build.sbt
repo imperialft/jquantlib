@@ -2,17 +2,17 @@ import AssemblyKeys._
 
 assemblySettings
 
+jarName in assembly := "jquantlib.jar"
+
+test in assembly := {}
+
 name := "jquantlib"
 
 organization := "org.jquantlib"
 
 version := "0.1.0"
 
-scalaVersion := "2.10.2"
-
-//javaSource in Compile <<= baseDirectory(_ / "jquantlib" / "src")
-
-//scalaSource in Compile <<= baseDirectory(_ / "jquantlib" / "src")
+scalaVersion := "2.10.3"
 
 libraryDependencies ++= Seq(
   "net.jcip" % "jcip-annotations" % "1.0" % "provided",
@@ -22,13 +22,10 @@ libraryDependencies ++= Seq(
   "org.joda" % "joda-primitives" % "1.0" % "provided"
 )
 
-jarName in assembly := "jquantlib.jar"
-
-excludedJars in assembly <<= (fullClasspath in assembly) map { cp =>
-  cp filter { _.data.getName == "scala-compiler.jar" }
-}
+EclipseKeys.skipParents := false
 
 classDirectory in Compile <<= baseDirectory apply ( _ / "target" / "classes" )
 
 initialCommands := "import org.jquantlib._"
 
+retrieveManaged := false
