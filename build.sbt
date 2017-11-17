@@ -24,7 +24,7 @@ libraryDependencies ++= Seq(
 
 EclipseKeys.skipParents := false
 
-classDirectory in Compile <<= baseDirectory apply ( _ / "target" / "classes" )
+classDirectory in Compile := (baseDirectory apply ( _ / "target" / "classes" )).value
 
 initialCommands := "import org.jquantlib._"
 
