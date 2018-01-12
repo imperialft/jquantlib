@@ -13,7 +13,7 @@ organization := "org.jquantlib"
 version := "0.1.0"
 
 //scalaVersion := "2.10.5"
-scalaVersion := "2.11.11"
+scalaVersion := "2.12.4"
 
 libraryDependencies ++= Seq(
   "net.jcip" % "jcip-annotations" % "1.0" % "provided",
