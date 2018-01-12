@@ -58,7 +58,7 @@ import org.jquantlib.util.Visitor;
  * For details about this implementation refer to "Stochastic Volatility and
  * Local Volatility" in "Case Studies and Financial Modelling Course Notes," by
  * Jim Gatheral, Fall Term, 2003
- *
+ *  
  * @see <a href="http://www.math.nyu.edu/fellows_fin_math/gatheral/Lecture1_Fall02.pdf">This article</a>
  *
  * @author Richard Gomes
@@ -163,7 +163,8 @@ public class LocalVolSurface extends LocalVolTermStructure {
         double w, wp, wm, dwdy, d2wdy2;
         strike = underlyingLevel;
         y = Math.log(strike / forwardValue);
-        dy = ((y != 0.0) ? y * 0.000001 : 0.000001);
+        //dy = ((y != 0.0) ? y * 0.000001 : 0.000001);
+        dy = ((y != 0.0) ? y * 0.0001 : 0.000001);
         strikep = strike * Math.exp(dy);
         strikem = strike / Math.exp(dy);
         w = bTS.blackVariance(time,  strike, true);
@@ -177,12 +178,14 @@ public class LocalVolSurface extends LocalVolTermStructure {
         /*@Time*/ double dt;
         double wpt, wmt, dwdt;
         if (t == 0.0) {
-            dt = 0.0001;
+            dt = 0.01;
+            //dt = 0.0001;
             wpt = bTS.blackVariance(/*@Time*/ (t + dt), strike, true);
             QL.require(wpt >= w , "decreasing variance at strike"); // TODO: message
             dwdt = (wpt - w) / dt;
         } else {
-            dt = Math.min(0.0001, t / 2.0);
+            dt = 0.01;
+            //dt = Math.min(0.0001, t / 2.0);
             wpt = bTS.blackVariance(/*@Time*/ (t + dt), strike, true);
             wmt = bTS.blackVariance(/*@Time*/ (t - dt), strike, true);
             QL.ensure(wpt >= w , "decreasing variance at strike"); // TODO: message
