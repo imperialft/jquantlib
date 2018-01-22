@@ -36,7 +36,7 @@ scalacOptions ++= Seq(
   //"-Ywarn-value-discard"
 )
 
-EclipseKeys.skipParents := false
+//EclipseKeys.skipParents := false
 
 classDirectory in Compile := (baseDirectory apply ( _ / "target" / "classes" )).value
 
