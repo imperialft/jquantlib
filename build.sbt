@@ -17,9 +17,7 @@ scalaVersion := "2.12.4"
 
 libraryDependencies ++= Seq(
   "net.jcip" % "jcip-annotations" % "1.0" % "provided",
-//  "org.slf4j" % "slf4j-api" % "1.7.5" % "provided",
   "org.slf4j" % "slf4j-api" % "1.7.25" % "provided",
-//  "org.jfree" % "jcommon" % "1.0.17" % "provided",
   "org.jfree" % "jcommon" % "1.0.24" % "provided",
   "org.jfree" % "jfreechart" % "1.0.14" % "provided",
   "org.joda" % "joda-primitives" % "1.0" % "provided"
@@ -35,8 +33,6 @@ scalacOptions ++= Seq(
   //"-Ywarn-numeric-widen",
   //"-Ywarn-value-discard"
 )
-
-//EclipseKeys.skipParents := false
 
 classDirectory in Compile := (baseDirectory apply ( _ / "target" / "classes" )).value
 
