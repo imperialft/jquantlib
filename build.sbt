@@ -1,8 +1,8 @@
-import AssemblyKeys._
+//import AssemblyKeys._
 
-assemblySettings
+//assemblySettings
 
-jarName in assembly := "jquantlib.jar"
+assemblyJarName in assembly := "jquantlib.jar"
 
 test in assembly := {}
 
