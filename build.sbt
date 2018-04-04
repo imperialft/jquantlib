@@ -39,3 +39,7 @@ classDirectory in Compile := (baseDirectory apply ( _ / "target" / "classes" )).
 initialCommands := "import org.jquantlib._"
 
 retrieveManaged := false
+
+sources in (Compile,doc) := Seq.empty
+
+publishArtifact in (Compile, packageDoc) := false
