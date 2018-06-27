@@ -95,6 +95,26 @@ public class ActualActual extends DayCounter {
         }
     }
 
+    public ActualActual(final ActualActual.Convention c, Period paymentPeriod) {
+        switch (c) {
+            case ISMA:
+            case Bond:
+                super.impl = new ImplISMA(paymentPeriod);
+                break;
+            case ISDA:
+            case Historical:
+            case Actual365:
+                super.impl = new ImplISDA();
+                break;
+            case AFB:
+            case Euro:
+                super.impl = new ImplAFB();
+                break;
+            default:
+                throw new LibraryException("unknown act/act convention"); // TODO: message
+        }
+    }
+
 
     //
     // inner classes
@@ -102,9 +122,26 @@ public class ActualActual extends DayCounter {
 
     final private class ImplISMA extends DayCounter.Impl {
 
+        public Period paymentPeriod;
+
+        public ImplISMA() {
+        }
+
+        public ImplISMA(Period p) {
+            paymentPeriod = p;
+        }
+
         @Override
         public final String name() /* @ReadOnly */{
-            return "Actual/Actual (ISMA)";
+            if (paymentPeriod == null) {
+                return "Actual/Actual (ICMA)";
+            } else if (paymentPeriod.units() == TimeUnit.Months) {
+                return "Actual/Actual (ICMA " + paymentPeriod.length() + "M)";
+            } else if (paymentPeriod.units() == TimeUnit.Years && paymentPeriod.length() == 1) {
+                return "Actual/Actual (ICMA 12M)";
+            } else {
+                return "Actual/Actual (ICMA)";
+            }
         }
 
         @Override
@@ -120,8 +157,19 @@ public class ActualActual extends DayCounter {
 
             // when the reference period is not specified, try taking
             // it equal to (d1,d2)
-            Date refPeriodStart = (!d3.isNull() ? d3 : d1);
-            Date refPeriodEnd   = (!d4.isNull() ? d4 : d2);
+            Date refPeriodEnd = d2; //(!d4.isNull() ? d4 : d2);
+            if (d3 != null) {
+                refPeriodEnd = d4;
+            }
+
+            Date refPeriodStart = d1;
+            if (d3 != null) {
+                refPeriodStart = d3;
+            } else if (paymentPeriod != null) {
+                refPeriodStart = refPeriodEnd.sub(paymentPeriod);
+            }
+            //(!d3.isNull() ? d3 : d1);
+
 
             QL.ensure(refPeriodEnd.gt(refPeriodStart) && refPeriodEnd.gt(d1) , "invalid reference period");  // TODO: message
 
