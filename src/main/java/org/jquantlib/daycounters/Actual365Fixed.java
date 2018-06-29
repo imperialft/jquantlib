@@ -44,6 +44,8 @@ import org.jquantlib.lang.annotation.QualityAssurance;
 import org.jquantlib.lang.annotation.QualityAssurance.Quality;
 import org.jquantlib.lang.annotation.QualityAssurance.Version;
 import org.jquantlib.time.Date;
+import org.jquantlib.time.Period;
+import org.jquantlib.time.TimeUnit;
 
 /**
  * "Actual/365 (Fixed)" day count convention, also know as
@@ -61,10 +63,34 @@ import org.jquantlib.time.Date;
 @QualityAssurance(quality=Quality.Q4_UNIT, version=Version.V097, reviewers="Richard Gomes")
 public class Actual365Fixed extends DayCounter {
 
+    public enum Convention {
+        Fixed, Adjusted
+    }
+
+
+    //
+    // public constructors
+    //
 
     public Actual365Fixed() {
-        super.impl = new Impl();
+        this(Convention.Fixed, null);
     }
+
+    public Actual365Fixed(final Actual365Fixed.Convention c, Period paymentPeriod) {
+        switch (c) {
+            case Adjusted:
+                super.impl = new ImplAdjusted(paymentPeriod);
+                break;
+            default:
+                super.impl = new Impl();
+                break;
+        }
+    }
+
+
+//    public Actual365Fixed() {
+//        super.impl = new Impl();
+//    }
 
     
     //
@@ -97,7 +123,42 @@ public class Actual365Fixed extends DayCounter {
                 final Date refPeriodStart, final Date refPeriodEnd) /* @ReadOnly */{
             return /*@Time*/ dayCount(dateStart, dateEnd)/365.0;
         }
+    }
 
+    final private class ImplAdjusted extends DayCounter.Impl {
+
+        public Period paymentPeriod;
+        public int months;
+
+        public ImplAdjusted(Period p) {
+            paymentPeriod = p;
+            months = (paymentPeriod.units() == TimeUnit.Years) ? paymentPeriod.length() * 12 : paymentPeriod.length();
+        }
+
+        //
+        // implements DayCounter
+        //
+
+        @Override
+//        public final String name() /* @ReadOnly */{
+//            return "Actual/365 (adjusted)";
+//        }
+        public final String name() /* @ReadOnly */{
+            return "Actual/365 (Adj " + months + "M)";
+        }
+
+        @Override
+        public /*@Time*/ final double yearFraction(
+                final Date dateStart, final Date dateEnd,
+                final Date refPeriodStart, final Date refPeriodEnd) /* @ReadOnly */{
+
+            Date testEnd = dateStart.add(paymentPeriod);
+            if (testEnd.eq(dateEnd) || (Date.isEndOfMonth(dateStart) && Date.isEndOfMonth(dateEnd) && Math.abs(testEnd.sub(dateEnd)) < 4)) {
+                return months / 12.0;
+            } else {
+                return /*@Time*/ dayCount(dateStart, dateEnd) / 365.0;
+            }
+        }
     }
 
 }
